@@ -9,7 +9,7 @@ int score(string);
 
 int n=72412;
 int m=16; //16
-string str[16];//input //16
+string str;//input //16
 string str_sorted;
 string dict[72412];//72412(the number of words in the dict)
 string dict_sorted[72412];//72412
@@ -17,13 +17,8 @@ string dict_sorted[72412];//72412
 int main(){
 	
 	//input&sort
-	for(int i=0;i<m;++i){
-		cin>>str[i];
-	}
+	cin>>str;
 	
-	sort(str,str+m);
-	for(int i=0;i<m;++i) str_sorted+=str[i];
-
 	//load dictionary
 	ifstream reading_file("dict.txt", ios::in);
 	
@@ -36,22 +31,8 @@ int main(){
 	while(!reading_file.eof()){
 		getline(reading_file, dict[i]);
 		int length=dict[i].length();
-
 		if(length>m) continue;
-
-		string letters[16];
-
 		transform(dict[i].begin(), dict[i].end(), dict[i].begin(), ::tolower);
-		for(int j=0;j<length;++j){
-			letters[j]=dict[i].substr(j,1);
-		}
-
-		sort(letters, letters+length);
-
-		for(int j=0;j<length;++j){
-			dict_sorted[i]+=letters[j];
-		}
-
 		++i;
 	}
 
@@ -60,10 +41,10 @@ int main(){
 	int memory; //indicate which word scores most
 	for(int i=0;i<n;++i){ //for all the words in dict
 
-		if(dict_sorted[i].empty()) continue;
+		if(dict[i].empty()) continue;
 
 		if(see_if_included(dict[i], str)){
-			if(score(dict[i])>highest_score){
+			if(score(dict[i]) > highest_score){
 				highest_score=score(dict[i]);
 				memory=i;
 			}
