@@ -20,12 +20,9 @@ int main(){
 	for(int i=0;i<m;++i){
 		cin>>str[i];
 	}
+	
 	sort(str,str+m);
-	for(int i=0;i<m;++i){
-		str_sorted+=str[i];
-	}
-
-	//cout<<str_sorted<<endl;
+	for(int i=0;i<m;++i) str_sorted+=str[i];
 
 	//load dictionary
 	ifstream reading_file("dict.txt", ios::in);
@@ -55,24 +52,19 @@ int main(){
 			dict_sorted[i]+=letters[j];
 		}
 
-		//cout<<"the end"<<endl;
-		//cout<<i+1<<" "<<dict_sorted[i]<<" "<<dict[i]<<endl;
 		++i;
 	}
 
 	//search phase&output
-
 	int highest_score=0;
 	int memory; //indicate which word scores most
 	for(int i=0;i<n;++i){ //for all the words in dict
 
-		//cout<<"In the searching phase"<<endl;
-		//cout<<dict_sorted[i]<<endl;
 		if(dict_sorted[i].empty()) continue;
 
-		if(see_if_included(dict_sorted[i], str_sorted)){
-			if(score(dict_sorted[i])>highest_score){
-				highest_score=score(dict_sorted[i]);
+		if(see_if_included(dict[i], str)){
+			if(score(dict[i])>highest_score){
+				highest_score=score(dict[i]);
 				memory=i;
 			}
 		}
@@ -90,6 +82,7 @@ int score(string word)
     	int score=0;
 	int l=word.length();
 
+	//if(word.empty()) return 0;
     	for(int i=0;i<l;++i){
         	for(int j=0;j<26;++j){
             	if(word.substr(i,1)==letter[j]){
@@ -109,25 +102,17 @@ bool see_if_included(string word, string str)
 {
     	int l=word.length();
     	int counter=0;
-    	string str_prsv=str;//preserve
         
     	for(int i=0;i<l;++i){ //for all the letters in the word
-        //int num=0;//=0(if no matching) or =1(matched)
             
         	for(int j=0;j<m;++j){ //for all the letters in the str
             		if(word.substr(i,1)==str.substr(j,1)){
                 		str.replace(j,1, "0"); //replace it with non-alphabet
-                		//cout<<"current str: "<<str<<endl;
-                		//num=1;
-                		//cout<<num<<endl;
                 		++counter;
-                		//cout<<str<<" "<<str_prsv.substr(j,1)<<" "<<counter<<endl;
                 		break;
             		}
         	}	
     	}
-        
-    	//str=str_prsv; //to restore not necessary?
         
     	if(counter==l){
         	return true;
