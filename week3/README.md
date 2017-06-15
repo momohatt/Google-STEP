@@ -13,4 +13,4 @@
         未完成。classを使おうとしている。
         
     test_polish.cpp
-        debug用
+        デバッグ用。
