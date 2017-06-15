@@ -14,7 +14,7 @@ struct Token {
     } value;
 };
 
-int indx;
+int indx; //used 'indx' instead of 'index'
 #define TKBUFSIZE 256
 #define NUM(x) ((x).value.number)
 char tokenbuf[TKBUFSIZE];

@@ -72,28 +72,26 @@ def tokenize(line):
 def convertToPostPrefixFormat(tokens):
     postPrefixTokens=[]
     stack=[]
-    sp1=sp2=0 #stackpointer
     index = 0
 
-    stack[0]={'priority':3} #IndexError: list assignment index out of range
-    postPrefixTokens[0]={'priority':3}
+    stack.append({'priority':3})
+    postPrefixTokens.append({'priority':3})
 
     while index < len(tokens):
         if tokens[index]['type']=='BRACKET_HEAD':
-            sp1+=1
-            stack[sp1]==tokens[index]
+            stack.append(tokens[index])
         elif tokens[index]['type']=='BRACKET_TAIL':
-            while stack[sp1]['type']!='BRACKET_HEAD':
-                sp2+=1
-                postPrefixTokens[sp2]=stack[sp1]
-                sp1-=1
+            while stack[-1]['type']!='BRACKET_HEAD':
+                postPrefixTokens.append(stack.pop())
         else:
-            while tokens[index]['priority']<=stack[sp1]['priority']:
-                sp2+=1
-                postPrefixTokens[sp2]=stack[sp1]
-                sp1-=1
-            sp1+=1
-            stack[sp1]=tokens[index]
+            #print index
+            while tokens[index]['priority']<=stack[-1]['priority']: #list index out of range
+                postPrefixTokens.append(stack.pop())
+            
+            stack.append(tokens[index])
+
+        #print 'stack'
+        #print stack
         
         index+=1
     
