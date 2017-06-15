@@ -99,27 +99,40 @@ def convertToPostPrefixFormat(tokens):
 
 def evaluate(tokens):
     answer = 0
-    tokens.insert(0, {'type': 'PLUS'}) # Insert a dummy '+' token
-    index = 1
+    index = 0
+    stack = []
+
     while index < len(tokens):
-        if tokens[index]['type'] == 'NUMBER':
-            if tokens[index - 1]['type'] == 'PLUS':
-                answer += tokens[index]['number']
-            elif tokens[index - 1]['type'] == 'MINUS':
-                answer -= tokens[index]['number']
-            elif tokens[index - 1]['type'] == 'MULTIPLY':
-                answer *= tokens[index]['number']
-            elif tokens[index -1]['type'] == 'DIVIDE':
-                answer /= tokens[index]['number']
-            else:
-                print 'Invalid syntax'
-        index += 1
-    return answer
+        if(tokens[index]['type']=='NUMBER'):
+            stack.append(tokens[index])
+        elif(tokens[index]['type']=='PLUS'):
+            tmp=stack.pop()['number']
+            tmp+=stack.pop()['number']
+            stack.append({'number':tmp})
+        elif(tokens[index]['type']=='MINUS'):
+            tmp=-1.0*stack.pop()['number']
+            tmp+=stack.pop()['number']
+            stack.append({'number':tmp})
+        elif(tokens[index]['type']=='MULTIPLY'):
+            tmp=stack.pop()['number']
+            tmp*=stack.pop()['number']
+            stack.append({'number':tmp})
+        elif(tokens[index]['type']=='DIVIDE'):
+            tmp=1.0/stack.pop()['number']
+            tmp*=stack.pop()['number']
+            stack.append({'number':tmp})
+        else:
+            print 'calculation error'
+         
+        index+=1
+
+    return stack.pop()['number']
 
 
 def test(line, expectedAnswer):
     tokens = tokenize(line)
-    actualAnswer = evaluate(tokens)
+    postPrefixTokens = convertToPostPrefixFormat(tokens)
+    actualAnswer = evaluate(postPrefixTokens)
     if abs(actualAnswer - expectedAnswer) < 1e-8:
         print "PASS! (%s = %f)" % (line, expectedAnswer)
     else:
@@ -131,6 +144,7 @@ def runTest():
     print "==== Test started! ===="
     test("1+2", 3)
     test("1.0+2.1-3", 0.1)
+    test("1.2+3.6/2", 3.0)
     print "==== Test finished! ====\n"
 
 runTest()
@@ -140,7 +154,6 @@ while True:
     line = raw_input()
     tokens = tokenize(line)
     postPrefixTokens = convertToPostPrefixFormat(tokens)
-    #answer = evaluate(postPrefixTokens)
-    #print "answer = %f\n" % answer
-    print postPrefixTokens
-
+    answer = evaluate(postPrefixTokens)
+    print "answer = %f\n" % answer
+    #print postPrefixTokens
