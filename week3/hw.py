@@ -1,4 +1,9 @@
 def readNumber(line, index):
+    """
+    recognizes numbers and makes them into tokens
+    takes string numerical figure and int index
+    returns tokenized numerical figure and index
+    """
     number = 0
     while index < len(line) and line[index].isdigit():
         number = number * 10 + int(line[index])
@@ -14,62 +19,55 @@ def readNumber(line, index):
     return token, index
 
 
-def readPlus(line, index):
-    token = {'type': 'PLUS', 'priority':1}
-    return token, index + 1
-
-
-def readMinus(line, index):
-    token = {'type': 'MINUS', 'priority':1}
-    return token, index + 1
-
-
-def readMultiply(line, index):
-    token = {'type': 'MULTIPLY', 'priority':2}
-    return token, index + 1
-
-
-def readDivide(line, index):
-    token = {'type': 'DIVIDE', 'priority':2}
-    return token, index + 1
-
-
-def readBracketHead(line, index):
-    token = {'type': 'BRACKET_HEAD', 'priority':0}
-    return token, index + 1
-
-
-def readBracketTail(line, index):
-    token = {'type': 'BRACKET_TAIL'}
+def readOperator(figure, index):
+    """
+    recognizes operators (including brackets) and makes them into tokens
+    takes string figure and int index
+    returns tokenized operators or false (only when there are any invalid characters)
+    """
+    if figure == '+':
+        token = {'type': 'PLUS', 'priority':1}
+    elif figure == '-':
+        token = {'type': 'MINUS', 'priority':1}
+    elif figure == '*':
+        token = {'type': 'MULTIPLY', 'priority':2}
+    elif figure == '/':
+        token = {'type': 'DIVIDE', 'priority':2}
+    elif figure == '(':
+        token = {'type': 'BRACKET_HEAD', 'priority':0}
+    elif figure == ')':
+        token = {'type': 'BRACKET_TAIL', 'priority':0}
+    else: #when an invalid character is found
+        return False
     return token, index + 1
 
 
 def tokenize(line):
+    """
+    splits numerical formula string into tokens
+    takes string numerical formula
+    returns an array of tokens
+    """
     tokens = []
     index = 0
     while index < len(line):
         if line[index].isdigit():
             (token, index) = readNumber(line, index)
-        elif line[index] == '+':
-            (token, index) = readPlus(line, index)
-        elif line[index] == '-':
-            (token, index) = readMinus(line, index)
-        elif line[index] == '*':
-            (token, index) = readMultiply(line, index)
-        elif line[index] == '/':
-            (token, index) = readDivide(line, index)
-        elif line[index] == '(':
-            (token, index) = readBracketHead(line, index)
-        elif line[index] == ')':
-            (token, index) = readBracketTail(line, index)
+        elif readOperator(line[index], index):
+            (token, index) = readOperator(line[index], index)
         else:
-            print 'Invalid character found: ' + line[index]
-            exit(1)
+            print 'Invalid character found:' + line[index]
+            quit(0)
         tokens.append(token)
     return tokens
 
 
 def convertToPostPrefixFormat(tokens):
+    """
+    converts formula of tokens written in infix notation into the one in postfix notation
+    takes an array of tokens
+    returns an array of tokens
+    """
     postPrefixTokens=[]
     stack=[]
     index = 0
@@ -98,6 +96,11 @@ def convertToPostPrefixFormat(tokens):
 
 
 def evaluate(tokens):
+    """
+    calculates the numerical formula written in postfix notation and returns the result
+    takes an array of tokens
+    returns a double number
+    """
     answer = 0
     index = 0
     stack = []
@@ -130,6 +133,11 @@ def evaluate(tokens):
 
 
 def test(line, expectedAnswer):
+    """
+    examines if the functions work correctly and prints out the result
+    takes string numerical formula and an int (expected answer)
+    returns nothing
+    """
     tokens = tokenize(line)
     postPrefixTokens = convertToPostPrefixFormat(tokens)
     actualAnswer = evaluate(postPrefixTokens)
@@ -141,6 +149,11 @@ def test(line, expectedAnswer):
 
 # Add more tests to this function :)
 def runTest():
+    """
+    conducts the test and prints out the result. done before the main function
+    takes nothing
+    returns nothing
+    """
     print "==== Test started! ===="
     test("1+2", 3)
     test("1.0+2.1-3", 0.1)
