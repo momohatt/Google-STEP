@@ -1,4 +1,5 @@
-各ファイルの説明
+各ファイルについて(6/15現在)
+
     hw.py
         完成版。tokenizeの後逆ポーランド記法に直してからevaluateしている。classを使っておらず関数のみ。
 
@@ -10,3 +11,6 @@
 
     hw_class.cpp
         未完成。classを使おうとしている。
+
+   test_polish.cpp
+        debug用
