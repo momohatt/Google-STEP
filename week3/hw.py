@@ -74,8 +74,7 @@ def convertToPostPrefixFormat(tokens):
     stack=[]
     index = 0
 
-    stack.append({'priority':3})
-    postPrefixTokens.append({'priority':3})
+    stack.append({'priority':-1})
 
     while index < len(tokens):
         if tokens[index]['type']=='BRACKET_HEAD':
@@ -83,24 +82,17 @@ def convertToPostPrefixFormat(tokens):
         elif tokens[index]['type']=='BRACKET_TAIL':
             while stack[-1]['type']!='BRACKET_HEAD':
                 postPrefixTokens.append(stack.pop())
+            del stack[-1]
         else:
-            #print index
-            while tokens[index]['priority']<=stack[-1]['priority']: #list index out of range
+            while tokens[index]['priority']<=stack[-1]['priority']:
                 postPrefixTokens.append(stack.pop())
             
             stack.append(tokens[index])
-
-        #print 'stack'
-        #print stack
         
         index+=1
     
-    while sp1 > 0:
-        sp2+=1
-        postPrefixTokens[sp2]=stack[sp1]
-        sp1-=1
-    
-    del postPrefixTokens[0]
+    while stack[-1]['priority']!=-1:
+        postPrefixTokens.append(stack.pop())
 
     return postPrefixTokens
 
@@ -149,4 +141,6 @@ while True:
     tokens = tokenize(line)
     postPrefixTokens = convertToPostPrefixFormat(tokens)
     #answer = evaluate(postPrefixTokens)
-    print "answer = %f\n" % postPrefixTokens
+    #print "answer = %f\n" % answer
+    print postPrefixTokens
+
