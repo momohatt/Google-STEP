@@ -38,7 +38,7 @@ def readOperator(figure, index):
     elif figure == ')':
         token = {'type': 'BRACKET_TAIL', 'priority':0}
     else: #when an invalid character is found
-        return False
+        raise TypeError("Invalid character found:", figure)
     return token, index + 1
 
 
@@ -53,11 +53,8 @@ def tokenize(line):
     while index < len(line):
         if line[index].isdigit():
             (token, index) = readNumber(line, index)
-        elif readOperator(line[index], index):
-            (token, index) = readOperator(line[index], index)
         else:
-            print 'Invalid character found:' + line[index]
-            quit(0)
+            (token, index) = readOperator(line[index], index)
         tokens.append(token)
     return tokens
 
