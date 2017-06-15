@@ -10,27 +10,37 @@ def readNumber(line, index):
             number += int(line[index]) * keta
             keta *= 0.1
             index += 1
-    token = {'type': 'NUMBER', 'number': number}
+    token = {'type': 'NUMBER', 'number': number, 'priority':3}
     return token, index
 
 
 def readPlus(line, index):
-    token = {'type': 'PLUS'}
+    token = {'type': 'PLUS', 'priority':1}
     return token, index + 1
 
 
 def readMinus(line, index):
-    token = {'type': 'MINUS'}
+    token = {'type': 'MINUS', 'priority':1}
     return token, index + 1
 
 
 def readMultiply(line, index):
-    token = {'type': 'MULTIPLY'}
+    token = {'type': 'MULTIPLY', 'priority':2}
     return token, index + 1
 
 
 def readDivide(line, index):
-    token = {'type': 'DIVIDE'}
+    token = {'type': 'DIVIDE', 'priority':2}
+    return token, index + 1
+
+
+def readBracketHead(line, index):
+    token = {'type': 'BRACKET_HEAD', 'priority':0}
+    return token, index + 1
+
+
+def readBracketTail(line, index):
+    token = {'type': 'BRACKET_TAIL'}
     return token, index + 1
 
 
@@ -48,11 +58,53 @@ def tokenize(line):
             (token, index) = readMultiply(line, index)
         elif line[index] == '/':
             (token, index) = readDivide(line, index)
+        elif line[index] == '(':
+            (token, index) = readBracketHead(line, index)
+        elif line[index] == ')':
+            (token, index) = readBracketTail(line, index)
         else:
             print 'Invalid character found: ' + line[index]
             exit(1)
         tokens.append(token)
     return tokens
+
+
+def convertToPostPrefixFormat(tokens):
+    postPrefixTokens=[]
+    stack=[]
+    sp1=sp2=0 #stackpointer
+    index = 0
+
+    stack[0]={'priority':3} #IndexError: list assignment index out of range
+    postPrefixTokens[0]={'priority':3}
+
+    while index < len(tokens):
+        if tokens[index]['type']=='BRACKET_HEAD':
+            sp1+=1
+            stack[sp1]==tokens[index]
+        elif tokens[index]['type']=='BRACKET_TAIL':
+            while stack[sp1]['type']!='BRACKET_HEAD':
+                sp2+=1
+                postPrefixTokens[sp2]=stack[sp1]
+                sp1-=1
+        else:
+            while tokens[index]['priority']<=stack[sp1]['priority']:
+                sp2+=1
+                postPrefixTokens[sp2]=stack[sp1]
+                sp1-=1
+            sp1+=1
+            stack[sp1]=tokens[index]
+        
+        index+=1
+    
+    while sp1 > 0:
+        sp2+=1
+        postPrefixTokens[sp2]=stack[sp1]
+        sp1-=1
+    
+    del postPrefixTokens[0]
+
+    return postPrefixTokens
 
 
 def evaluate(tokens):
@@ -97,5 +149,6 @@ while True:
     print '> ',
     line = raw_input()
     tokens = tokenize(line)
-    answer = evaluate(tokens)
-    print "answer = %f\n" % answer
+    postPrefixTokens = convertToPostPrefixFormat(tokens)
+    #answer = evaluate(postPrefixTokens)
+    print "answer = %f\n" % postPrefixTokens

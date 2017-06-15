@@ -4,7 +4,7 @@
 #include<stack>
 using namespace std;
 
-enum Type {NUMBER, PLUS, MINUS, MULTIPLY, DIVIDE, BRACKET_HEAD, BRACKET_TAIL, END};
+enum Type {NUMBER, PLUS, MINUS, MULTIPLY, DIVIDE, BRACKET_HEAD, BRACKET_TAIL};
 //typedef enum Type Type;
 
 struct Token {
@@ -163,5 +163,6 @@ vector<Token> polishize(vector<Token> tokens)
 
 int main()
 {
+
     return 0;
 }
