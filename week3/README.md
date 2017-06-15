@@ -11,6 +11,6 @@
 
     hw_class.cpp
         未完成。classを使おうとしている。
-
-   test_polish.cpp
-        debug用
+        
+    test_polish.cpp
+        debug用
