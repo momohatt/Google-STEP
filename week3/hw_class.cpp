@@ -11,36 +11,82 @@ class Token{
     public:
         Type type;
         double value;
+        int priority;
 
         //constructor
         Token(Type t){
             type = t;
             //value = NULL;
+            if(t=='PLUS'||t=='MINUS') priority = 1;
+            if(t=='MULTIPLY'||t=='DIVIDE') priority = 2;
+            if(t=='BRACKET_HEAD'||t=='BRACKET_TAIL') priority = 0;
         }
 
         Token(double d){
             type = NUMBER;
             value = d;
+            priority = 3;
         }
 
         Token(const Token &obj){
             type = obj.type;
             value = obj.value;
         }
+
 };
 
 
 class Formula{
+    private:
+        string formula_str;
+        vector<Token> tokens;
+        stack<Token> postPrefixTokens;
+        int indx=0;
+
     public:
         void setString(string formula){
             formula_str = formula;
         }
 
         double evaluate(){
+            int i = 0; //index
+            stack<Token> S;
+
+            while (i<postPrefixTokens.size()){
+                if (postPrefixTokens.top().type == 'NUMBER'){
+                    S.push(postPrefixTokens.top());
+                    postPrefixTokens.pop();
+                } else if (postPrefixTokens.top().type == 'PLUS'){
+                    Token tmp(0.0);
+                    tmp.value = S.top().value; S.pop();
+                    tmp.value += S.top().value; S.pop();
+                    S.push(tmp);
+                } else if (postPrefixTokens.top().type == 'MINUS'){
+                    Token tmp(0.0);
+                    tmp.value = -1.0 * S.top().value; S.pop();
+                    tmp.value += S.top().value;
+                    S.push(tmp);
+                } else if (postPrefixTokens.top().type == 'MULTIPLY'){
+                    Token tmp(0.0);
+                    tmp.value = S.top().value; S.pop();
+                    tmp.value *= S.top().value; S.pop();
+                    S.push(tmp);
+                } else if (postPrefixTokens.top().type == 'DIVIDE'){
+                    Token tmp(0.0);
+                    tmp.value = 1.0 / S.top().value; S.pop();
+                    tmp.value *= S.top().value; S.pop();
+                    S.push(tmp);
+                } else {
+                    cout<<"Calculation Error!!"<<endl;
+                }
+
+                ++indx;
+
+                return S.top().value;
         }
 
     private:
-        Token readNumber(int indx)
+        Token readNumber(int& indx)
         {
             double number = 0.0;
             while (indx < formula_str.length() && isdigit(formula_str[indx])){
@@ -56,8 +102,8 @@ class Formula{
 
             return Token(number);
         }
-        
-        Token readOperator(int indx)
+
+        Token readOperator(int& indx)
         {
             switch (formula_str[indx]){
                 case '+':
@@ -77,9 +123,8 @@ class Formula{
             }
         }
 
-        void tokenize()
+        void tokenize(int& indx)
         {
-            int indx = 0;
             while(indx < formula_str.length()){
                 if(isdigit(formula_str[indx])){
                         tokens.push_back[readNumber(indx)];
@@ -90,36 +135,54 @@ class Formula{
             return;
         }
 
-    private:
-        string formula_str;
-        vector<Token> tokens;
+        void convertToPostPrefixFormat() //incomplete
+        {
+            stack<Token> S;
+            S[0].priority = -1;
+            int length=tokens.size();
 
+            int i = 0; //index
+            while (i < length ){
+                if (tokens[i].type == 'BRACKET_HEAD'){
+                    S.push(tokens[i]);
+                } else if (tokens[i].type == 'BRACKET_TAIL'){
+                    while (S.top().type != 'BRACKET_HEAD'){
+                        postPrefixTokens.push(S.top());
+                        S.pop();
+                    }
+                    S.pop();
+                } else {
+                    while (tokens[i].priority <= S.top().priority){
+                        postPrefixTokens.push(S.top());
+                        S.pop();
+                    }
+                    S.push (tokens[i]);
+                }
+                i++;
+            }
+
+            while (S.top().priority != -1){
+                postPrefixTokens.push(S.top());
+                S.pop();
+            }
+
+            return;
+        }
+
+        } //なんか括弧の位置おかしい…わかんない…
 };
 
-vector<Token> polishize(vector<Token> tokens)
-{
-    int length=tokens.size();
-    int priority[length];
-    stack<Token> 
-
-    for(int i=0;i<length;++i){
-        if(tokens[i].type=='NUMBER') priority[i]=3;
-        if(tokens[i].type=='PLUS'||tokens[i].type=='MINUS') priority[i]==1;
-        if(tokens[i].type=='MULTIPLY'||tokens[i].type=='DIVIDE') priority[i]==2;
-        if(tokens[i].type=='BRACKET_HEAD') priority[i]=4;
-        if(tokens[i].type=='BRACKET_TAIL') priority[i]=0;
-    }
-
-    stack[0];
-
-}
 
 int main()
 {
+    string tmp;
     Formula form;
-    form.setString(cin);
-    int answer = form.evaluate;
-    cout<<"answer:"<<answer<<endl;
+    for(;;){
+        cout<<"> "<<endl;
+        cin>>tmp;
+        form.setString(tmp);
+        int answer = form.evaluate;
+        cout<<"answer:"<<answer<<endl;
+    }
     return 0;
 }
-

@@ -98,7 +98,7 @@ def evaluate(tokens):
     takes an array of tokens
     returns a double number
     """
-    answer = 0
+    
     index = 0
     stack = []
 
@@ -152,9 +152,13 @@ def runTest():
     returns nothing
     """
     print "==== Test started! ===="
+    test("1", 1)
     test("1+2", 3)
+    test("1.0+2.0", 3.0)
     test("1.0+2.1-3", 0.1)
     test("1.2+3.6/2", 3.0)
+    test("(1+2-1.5)*7.8", 11.7)
+    test("(1.0+(3.0*5-7)/2)*10", 50)
     print "==== Test finished! ====\n"
 
 runTest()
