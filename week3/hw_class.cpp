@@ -81,8 +81,9 @@ class Formula{
                 }
 
                 ++indx;
+            }
 
-                return S.top().value;
+            return S.top().value;
         }
 
     private:
@@ -90,7 +91,7 @@ class Formula{
         {
             double number = 0.0;
             while (indx < formula_str.length() && isdigit(formula_str[indx])){
-            number = number * 10 + stoi(formula_str[indx]);
+            number = number * 10 + (formula_str[indx] - '0');
             indx++;
             }
             if (indx < formula_str.length() && formula_str[indx] == '.'){
@@ -119,7 +120,9 @@ class Formula{
                 case ')':
                     return Token('BRACKET_TAIL');
                 default:
-                    throw exception; //
+                    cout<<"Invalid character found."<<endl;
+                    Token error('ERROR');
+                    exit(1);
             }
         }
 
@@ -127,9 +130,9 @@ class Formula{
         {
             while(indx < formula_str.length()){
                 if(isdigit(formula_str[indx])){
-                        tokens.push_back[readNumber(indx)];
+                        tokens.push_back(readNumber(indx));
                 } else {
-                    tokens.push_back[readOperator(indx)];
+                    tokens.push_back(readOperator(indx));
                 }
             }
             return;
@@ -138,7 +141,9 @@ class Formula{
         void convertToPostPrefixFormat() //incomplete
         {
             stack<Token> S;
-            S[0].priority = -1;
+            Token tmp(0.0);
+            tmp.priority = -1;
+            S.push(tmp);
             int length=tokens.size();
 
             int i = 0; //index
@@ -165,11 +170,8 @@ class Formula{
                 postPrefixTokens.push(S.top());
                 S.pop();
             }
-
             return;
         }
-
-        } //なんか括弧の位置おかしい…わかんない…
 };
 
 
@@ -181,7 +183,7 @@ int main()
         cout<<"> "<<endl;
         cin>>tmp;
         form.setString(tmp);
-        int answer = form.evaluate;
+        int answer = form.evaluate();
         cout<<"answer:"<<answer<<endl;
     }
     return 0;
