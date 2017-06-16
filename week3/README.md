@@ -15,3 +15,5 @@
    test_polish.cpp
         デバッグ用。
 
+   hw_ast.py
+        ファイルを作っただけ。
