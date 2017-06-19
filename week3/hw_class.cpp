@@ -4,22 +4,22 @@
 #include<stack>
 using namespace std;
 
-enum Type {NUMBER, PLUS, MINUS, MULTIPLY, DIVIDE, BRACKET_HEAD, BRACKET_TAIL};
+enum TYPE {NUMBER, PLUS, MINUS, MULTIPLY, DIVIDE, BRACKET_HEAD, BRACKET_TAIL, ERROR};
 
 
 class Token{
     public:
-        Type type;
+        TYPE type;
         double value;
         int priority;
 
         //constructor
-        Token(Type t){
+        Token(TYPE t){
             type = t;
             //value = NULL;
-            if(t=='PLUS'||t=='MINUS') priority = 1;
-            if(t=='MULTIPLY'||t=='DIVIDE') priority = 2;
-            if(t=='BRACKET_HEAD'||t=='BRACKET_TAIL') priority = 0;
+            if(t == PLUS || t == MINUS) priority = 1;
+            if(t == MULTIPLY || t == DIVIDE) priority = 2;
+            if(t == BRACKET_HEAD || t == BRACKET_TAIL) priority = 0;
         }
 
         Token(double d){
@@ -40,38 +40,44 @@ class Formula{
     private:
         string formula_str;
         vector<Token> tokens;
-        stack<Token> postPrefixTokens;
-        int indx=0;
+        stack<Token> postfixTokens;
+        int indx;
 
     public:
+
+        Formula(){
+            indx = 0;
+        }
+
         void setString(string formula){
             formula_str = formula;
         }
 
         double evaluate(){
+            convertToPostfixFormat();
             int i = 0; //index
             stack<Token> S;
 
-            while (i<postPrefixTokens.size()){
-                if (postPrefixTokens.top().type == 'NUMBER'){
-                    S.push(postPrefixTokens.top());
-                    postPrefixTokens.pop();
-                } else if (postPrefixTokens.top().type == 'PLUS'){
+            while (i<postfixTokens.size()){
+                if (postfixTokens.top().type == NUMBER){
+                    S.push(postfixTokens.top());
+                    postfixTokens.pop();
+                } else if (postfixTokens.top().type == PLUS){
                     Token tmp(0.0);
                     tmp.value = S.top().value; S.pop();
                     tmp.value += S.top().value; S.pop();
                     S.push(tmp);
-                } else if (postPrefixTokens.top().type == 'MINUS'){
+                } else if (postfixTokens.top().type == MINUS){
                     Token tmp(0.0);
                     tmp.value = -1.0 * S.top().value; S.pop();
                     tmp.value += S.top().value;
                     S.push(tmp);
-                } else if (postPrefixTokens.top().type == 'MULTIPLY'){
+                } else if (postfixTokens.top().type == MULTIPLY){
                     Token tmp(0.0);
                     tmp.value = S.top().value; S.pop();
                     tmp.value *= S.top().value; S.pop();
                     S.push(tmp);
-                } else if (postPrefixTokens.top().type == 'DIVIDE'){
+                } else if (postfixTokens.top().type == DIVIDE){
                     Token tmp(0.0);
                     tmp.value = 1.0 / S.top().value; S.pop();
                     tmp.value *= S.top().value; S.pop();
@@ -108,20 +114,20 @@ class Formula{
         {
             switch (formula_str[indx]){
                 case '+':
-                    return Token('PLUS');
+                    return Token(PLUS);
                 case '-':
-                    return Token('MINUS');
+                    return Token(MINUS);
                 case '*':
-                    return Token('MULTIPLY');
+                    return Token(MULTIPLY);
                 case '/':
-                    return Token('DIVIDE');
+                    return Token(DIVIDE);
                 case '(':
-                    return Token('BRACKET_HEAD');
+                    return Token(BRACKET_HEAD);
                 case ')':
-                    return Token('BRACKET_TAIL');
+                    return Token(BRACKET_TAIL);
                 default:
                     cout<<"Invalid character found."<<endl;
-                    Token error('ERROR');
+                    Token error(ERROR);
                     exit(1);
             }
         }
@@ -138,9 +144,9 @@ class Formula{
             return;
         }
 
-        void convertToPostPrefixFormat() //incomplete
+        void convertToPostfixFormat() //incomplete
         {
-            stack<Token> S;
+            stack<Token> S; //working space
             Token tmp(0.0);
             tmp.priority = -1;
             S.push(tmp);
@@ -148,17 +154,17 @@ class Formula{
 
             int i = 0; //index
             while (i < length ){
-                if (tokens[i].type == 'BRACKET_HEAD'){
+                if (tokens[i].type == BRACKET_HEAD){
                     S.push(tokens[i]);
-                } else if (tokens[i].type == 'BRACKET_TAIL'){
-                    while (S.top().type != 'BRACKET_HEAD'){
-                        postPrefixTokens.push(S.top());
+                } else if (tokens[i].type == BRACKET_TAIL){
+                    while (S.top().type != BRACKET_HEAD){
+                        postfixTokens.push(S.top());
                         S.pop();
                     }
                     S.pop();
                 } else {
                     while (tokens[i].priority <= S.top().priority){
-                        postPrefixTokens.push(S.top());
+                        postfixTokens.push(S.top());
                         S.pop();
                     }
                     S.push (tokens[i]);
@@ -167,7 +173,7 @@ class Formula{
             }
 
             while (S.top().priority != -1){
-                postPrefixTokens.push(S.top());
+                postfixTokens.push(S.top());
                 S.pop();
             }
             return;
@@ -180,10 +186,10 @@ int main()
     string tmp;
     Formula form;
     for(;;){
-        cout<<"> "<<endl;
+        cout<<"> ";
         cin>>tmp;
         form.setString(tmp);
-        int answer = form.evaluate();
+        double answer = form.evaluate();
         cout<<"answer:"<<answer<<endl;
     }
     return 0;
