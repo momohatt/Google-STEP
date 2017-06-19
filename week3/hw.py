@@ -15,7 +15,7 @@ def readNumber(line, index):
             number += int(line[index]) * keta
             keta *= 0.1
             index += 1
-    token = {'type': 'NUMBER', 'number': number, 'priority':3}
+    token = {'type': 'NUMBER', 'number': number, 'priority':4}
     return token, index
 
 
@@ -33,6 +33,8 @@ def readOperator(figure, index):
         token = {'type': 'MULTIPLY', 'priority':2}
     elif figure == '/':
         token = {'type': 'DIVIDE', 'priority':2}
+    elif figure == '^':
+        token = {'type': 'POWER', 'priority':3}
     elif figure == '(':
         token = {'type': 'BRACKET_HEAD', 'priority':0}
     elif figure == ')':
@@ -59,13 +61,13 @@ def tokenize(line):
     return tokens
 
 
-def convertToPostPrefixFormat(tokens):
+def convertToPostfixFormat(tokens):
     """
     converts formula of tokens written in infix notation into the one in postfix notation
     takes an array of tokens
     returns an array of tokens
     """
-    postPrefixTokens=[]
+    postfixTokens=[]
     stack=[]
     index = 0
 
@@ -76,20 +78,20 @@ def convertToPostPrefixFormat(tokens):
             stack.append(tokens[index])
         elif tokens[index]['type']=='BRACKET_TAIL':
             while stack[-1]['type']!='BRACKET_HEAD':
-                postPrefixTokens.append(stack.pop())
+                postfixTokens.append(stack.pop())
             del stack[-1]
         else:
             while tokens[index]['priority']<=stack[-1]['priority']:
-                postPrefixTokens.append(stack.pop())
+                postfixTokens.append(stack.pop())
             
             stack.append(tokens[index])
         
         index+=1
     
     while stack[-1]['priority']!=-1:
-        postPrefixTokens.append(stack.pop())
+        postfixTokens.append(stack.pop())
 
-    return postPrefixTokens
+    return postfixTokens
 
 
 def evaluate(tokens):
@@ -103,24 +105,28 @@ def evaluate(tokens):
     stack = []
 
     while index < len(tokens):
-        if(tokens[index]['type']=='NUMBER'):
+        if(tokens[index]['type'] == 'NUMBER'):
             stack.append(tokens[index])
-        elif(tokens[index]['type']=='PLUS'):
-            tmp=stack.pop()['number']
-            tmp+=stack.pop()['number']
-            stack.append({'number':tmp})
-        elif(tokens[index]['type']=='MINUS'):
-            tmp=-1.0*stack.pop()['number']
-            tmp+=stack.pop()['number']
-            stack.append({'number':tmp})
-        elif(tokens[index]['type']=='MULTIPLY'):
-            tmp=stack.pop()['number']
-            tmp*=stack.pop()['number']
-            stack.append({'number':tmp})
-        elif(tokens[index]['type']=='DIVIDE'):
-            tmp=1.0/stack.pop()['number']
-            tmp*=stack.pop()['number']
-            stack.append({'number':tmp})
+        elif(tokens[index]['type'] == 'PLUS'):
+            tmp = stack.pop()['number']
+            tmp += stack.pop()['number']
+            stack.append({'number': tmp})
+        elif(tokens[index]['type'] == 'MINUS'):
+            tmp = -1.0 * stack.pop()['number']
+            tmp += stack.pop()['number']
+            stack.append({'number': tmp})
+        elif(tokens[index]['type'] == 'MULTIPLY'):
+            tmp = stack.pop()['number']
+            tmp *= stack.pop()['number']
+            stack.append({'number': tmp})
+        elif(tokens[index]['type'] == 'DIVIDE'):
+            tmp = 1.0 / stack.pop()['number']
+            tmp *= stack.pop()['number']
+            stack.append({'number': tmp})
+        elif(tokens[index]['type'] == 'POWER'):
+            power = stack.pop()['number']
+            tmp = stack.pop()['number'] ** power
+            stack.append({'number': tmp})
         else:
             print 'calculation error'
          
@@ -136,8 +142,8 @@ def test(line, expectedAnswer):
     returns nothing
     """
     tokens = tokenize(line)
-    postPrefixTokens = convertToPostPrefixFormat(tokens)
-    actualAnswer = evaluate(postPrefixTokens)
+    postfixTokens = convertToPostfixFormat(tokens)
+    actualAnswer = evaluate(postfixTokens)
     if abs(actualAnswer - expectedAnswer) < 1e-8:
         print "PASS! (%s = %f)" % (line, expectedAnswer)
     else:
@@ -152,13 +158,30 @@ def runTest():
     returns nothing
     """
     print "==== Test started! ===="
-    test("1", 1)
-    test("1+2", 3)
+    test("1", 1.0)
+    test("1+2", 3.0)
+    test("1+2.0", 3.0)
+    test("1.0+2", 3.0)
     test("1.0+2.0", 3.0)
+
+    test("1-2", -1.0)
+    test("1-2.0+3", 2.0)
     test("1.0+2.1-3", 0.1)
-    test("1.2+3.6/2", 3.0)
-    test("(1+2-1.5)*7.8", 11.7)
-    test("(1.0+(3.0*5-7)/2)*10", 50)
+
+    test("3*2", 6.0)
+    test("4/2", 2.0)
+    test("1+2*3", 7.0)
+    test("1*2+3*4", 14.0)
+    test("1/2+3/4", 1.25)
+
+    test("3^2", 9.0)
+    test("2^5-1", 31.0)
+    test("2^5/4", 8.0)
+
+    test("(1)", 1.0)
+    test("(1+2)*(3+4)", 21.0)
+    test("(1+(2-3)*4)*5", -15.0)
+    test("(1+(2-3)^4)*5", 10.0)
     print "==== Test finished! ====\n"
 
 runTest()
@@ -167,7 +190,7 @@ while True:
     print '> ',
     line = raw_input()
     tokens = tokenize(line)
-    postPrefixTokens = convertToPostPrefixFormat(tokens)
-    answer = evaluate(postPrefixTokens)
+    postfixTokens = convertToPostfixFormat(tokens)
+    answer = evaluate(postfixTokens)
     print "answer = %f\n" % answer
-    #print postPrefixTokens
+    #print postfixTokens
