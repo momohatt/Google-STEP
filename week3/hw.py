@@ -184,13 +184,18 @@ def runTest():
     test("(1+(2-3)^4)*5", 10.0)
     print "==== Test finished! ====\n"
 
-runTest()
 
-while True:
-    print '> ',
-    line = raw_input()
-    tokens = tokenize(line)
-    postfixTokens = convertToPostfixFormat(tokens)
-    answer = evaluate(postfixTokens)
-    print "answer = %f\n" % answer
-    #print postfixTokens
+def main():
+    runTest()
+
+    while True:
+        print '> ',
+        line = raw_input()
+        tokens = tokenize(line)
+        postfixTokens = convertToPostfixFormat(tokens)
+        answer = evaluate(postfixTokens)
+        print "answer = %f\n" % answer
+        #print postfixTokens
+
+if __name__ == '__main__':
+    main()
