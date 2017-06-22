@@ -2,15 +2,21 @@
 
 * クリークとは，その要素の点が互いにパス1つでたどれるような点の集合。
 * 最大クリークとは，そのような集合のうち要素数が最大のもの。
-* 結果，最大クリークの要素数は_716_と求まった。構成要素の一部を末尾に示す。(残りはresult.txtを参照)
+* 結果，最大クリークの要素数は*716*と求まった。構成要素の一部を末尾に示す。(残りはresult.txtを参照)
 
 ## 実装について
 
-* 予め双方向でないパスをデータから除外した(<https://github.com/keink/stephw4/blob/master/mutuallinks.cpp> を少し改変して使わせていただきました，ありがとうございます)
-* アルゴリズムに関して参考にした論文など:
+* 予め双方向でないパスおよび双方向エッジを持たないノードをデータから除外した(<https://github.com/keink/stephw4/blob/master/mutuallinks.cpp> を少し改変して使わせていただきました)ところ，全体のノードの半分ほど(763995)が残った。今回はこのノードたちのみを使っているが，扱いやすくするため，ノードに振られている番号を前から詰めて新しく振り直した。
+* R. CarraghanとP.M. Pardalosが1990年に発表したアルゴリズムを用いた。
+* 参考にした資料など:
+
 R. Carraghan, P.M. Pardalos, An exact algorithm for the maximum clique problem (1990)
+
 Patric R. J. Ostergard, A fast algorithm for the maximum clique problem (2002)
+(この論文で紹介されている1990年のアルゴリズムの擬似コードがわかりやすかったです)
+
 <http://www.tani.cs.chs.nihon-u.ac.jp/g-2006/s5402031hide/maxclq_last.pdf>
+
 
 ## ファイルの説明
 
