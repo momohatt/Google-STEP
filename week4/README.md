@@ -27,7 +27,7 @@ Patric R. J. Ostergard, A fast algorithm for the maximum clique problem (2002)
 ### pageRank
 未完成。授業スライドであったpageRankを実装してみようとした。(あまり関係ない)
 
-## 最大クリークの出力
+## maxClique.cppの出力の一部
     Max Clique Components:
     純名里沙
     阪急電鉄
