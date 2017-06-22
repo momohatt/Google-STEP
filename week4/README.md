@@ -6,11 +6,11 @@
 
 ## 実装について
 
-    * 予め双方向でないパスをデータから除外した(<https://github.com/keink/stephw4/blob/master/mutuallinks.cpp> を少し改変して使わせていただきました，ありがとうございます)
-    * アルゴリズムに関して参考にした論文など:
-        R. Carraghan, P.M. Pardalos, An exact algorithm for the maximum clique problem (1990)
-        Patric R. J. Ostergard, A fast algorithm for the maximum clique problem (2002)
-        <http://www.tani.cs.chs.nihon-u.ac.jp/g-2006/s5402031hide/maxclq_last.pdf>
+* 予め双方向でないパスをデータから除外した(<https://github.com/keink/stephw4/blob/master/mutuallinks.cpp> を少し改変して使わせていただきました，ありがとうございます)
+* アルゴリズムに関して参考にした論文など:
+R. Carraghan, P.M. Pardalos, An exact algorithm for the maximum clique problem (1990)
+Patric R. J. Ostergard, A fast algorithm for the maximum clique problem (2002)
+<http://www.tani.cs.chs.nihon-u.ac.jp/g-2006/s5402031hide/maxclq_last.pdf>
 
 ## ファイルの説明
 
