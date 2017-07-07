@@ -48,7 +48,7 @@ bool confirmAdjacency(string from, string to)
 {
     int from_id = titles[from];
     int to_id = titles[to];
-    cout<<from_id<<" "<<to_id<<endl;
+    //cout<<from_id<<" "<<to_id<<endl;
     for (int i = 0; i < adjacencyList[from_id].size(); ++i){
         if (adjacencyList[from_id][i] == to_id)
             return true;
@@ -58,10 +58,11 @@ bool confirmAdjacency(string from, string to)
 
 int main()
 {
-    readPages("mutualPage_data.txt");
-    readLinks("mutualLink_data.txt");
-    
+    readPages("pages.txt");
+    readLinks("links.txt");
+
     string from, to;
+    
     for(;;){
         cout << "出発点と到達点を入力: ";
         cin >> from >> to;
@@ -71,6 +72,29 @@ int main()
             cout<<"Not adjacent"<<endl;
         }
     }
+
+    /*
+    ifstream ifs("hoge.txt");
+    vector<string> names;
+    string tmp;
+    int flag = 0;
+    for(int i = 0; i < 716; ++i){
+        ifs >> tmp;
+        names.push_back(tmp);
+    }
+    for (int i = 0; i < 716; ++i){
+        for (int j = i + 1; j < 716; ++j){
+            if (confirmAdjacency(names[i], names[j])) {
+                //cout<<i<<" "<<j<<" Okay"<<endl;
+            } else {
+                cout<<i<<" "<<j<<" NOT okay"<<endl;
+                flag++;
+            }
+        }
+    }
+
+    cout<<"flag:"<<flag<<endl;
+    */
 
     return 0;
 }
