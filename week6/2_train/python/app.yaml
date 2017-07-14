@@ -4,4 +4,4 @@ runtime: python27
 
 handlers:
 - url: /.*
-  script: main.cpp
+  script: main.app

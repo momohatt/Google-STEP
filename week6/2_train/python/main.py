@@ -35,7 +35,7 @@ class SearchTransit(webapp2.RequestHandler):
         self.response.write('<title>Search Result</title>')
         self.response.write('<body> <h1> Search Result </h1>')
         start = self.request.get("from")
-        end = self.response.get("to")
+        end = self.request.get("to")
         
     def makeAdjList(self):
         global data
@@ -51,8 +51,8 @@ class SearchTransit(webapp2.RequestHandler):
         global adjList
         queue = []
         dist = [10000] * 1000
-        while True:
-            for i in range
+        while queue:
+            
             
 
 
@@ -60,15 +60,15 @@ def handleData():
     response = urllib2.urlopen('http://lotr.fantasy-transit.appspot.com/net?format=json').read().decode('utf-8')
     global data 
     data = json.loads(response)
-    #print(data)
-    #for dictionary in data:
-    #    for station in dictionary['Stations']:
-    #        print(dictionary['Name'], station)
+    print(data)
+    for dictionary in data:
+        for station in dictionary['Stations']:
+            print(dictionary['Name'], station)
     return
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
-    ('/search', SearchTransit)
+#    ('/search', SearchTransit)
 ], debug = True)
 
 def main():
